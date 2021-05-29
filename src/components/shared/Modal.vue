@@ -41,6 +41,7 @@
     height: 100%;
     top: 0;
     left: 0;
+    padding-top: 100px;
     background: transparent;
     pointer-events: none;
   }
@@ -48,7 +49,7 @@
   .modal {
     max-width: 600px;
     width: 96%;
-    min-height: 360px;
+    min-height: 393px;
     background: white;
     border-radius: 13px;
     padding: 1.6rem;
@@ -60,7 +61,7 @@
 
   @media (min-width: 1024px) {
     .modal {
-      min-height: 400px;
+      min-height: 653px;
     }
   }
 
