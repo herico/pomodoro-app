@@ -9,17 +9,17 @@
           <div class="time-settings">
             <div class="time-setting" v-for="timeLimit in timeLimits" :key="timeLimit.name">
               <label :for="timeLimit.name">{{ timeLimit.title }}</label>
-              <Field :name="timeLimit.name" type="number"
+              <Field :name="timeLimit.name"
                 v-model="form.time[timeLimit.name]"
                 v-slot="{ field, errorMessage }"
                 :rules="timeRules" :id="timeLimit.name"  :value="timeLimit.value">
-                <input v-bind="field"/>
+                <input v-bind="field" type="number"/>
                 <span v-if="errorMessage" role="alert">{{ errorMessage }}</span>
               </Field>
             </div>
           </div>
         </article>
-        <article class="settings-section divider">
+        <article class="settings-section font divider">
           <h4 class="settings-title">FONT</h4>
           <div class="font-settings">
             <div v-for="font in fonts"
@@ -31,7 +31,7 @@
             </div>
           </div>
         </article>
-        <article class="modal-section">
+        <article class="settings-section color">
           <h4 class="settings-title">COLOR</h4>
           <div class="font-settings">
             <div :class="['font-setting', color.isActive ? 'active': '']" v-for="color in colors" :key="color.name">

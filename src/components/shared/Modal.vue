@@ -53,7 +53,7 @@
   .modal {
     max-width: 600px;
     width: 96%;
-    min-height: 393px;
+    min-height: 470px;
     background: white;
     border-radius: 13px;
     padding: 1.6rem;
@@ -66,9 +66,6 @@
   @media (min-width: 1024px) {
     .overlay {
       padding-top: 0;
-    }
-    .modal {
-      min-height: 653px;
     }
   }
 
@@ -98,8 +95,8 @@
   }
 
   .modal-title {
-    font-size: 1.287rem;
-    font-weight: 500;
+    font-size: 1.887rem;
+    font-weight: 700;
     color: var(--text-dark-color);
   }
 
@@ -110,7 +107,7 @@
   }
 
   .modal-close i {
-    font-size: 1.987rem;
+    font-size: 1.487rem;
     font-weight: 400;
     color: var(--text-color);
     transition: color 0.6s ease-in-out;

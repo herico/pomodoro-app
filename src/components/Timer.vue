@@ -49,6 +49,7 @@
         },
         methods: {
             startTimer() {
+                window.navigator.vibrate(200);
                 this.timerInterval = setInterval(() => {
                     this.timePassed = this.timePassed += 1;
                     this.timeLeft = this.limit - this.timePassed;
@@ -76,6 +77,7 @@
                     .setAttribute("stroke-dasharray", circleDasharray);
             },
             pauseTimer() {
+                window.navigator.vibrate(200);
                 clearInterval(this.timerInterval);
                 this.timerInterval = null;
                 this.$emit('timer-paused', this.timeLeft);

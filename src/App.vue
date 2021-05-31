@@ -183,7 +183,7 @@
     font-size: 16px;
   }
 
-  @media (min-width: 1201px) {
+  @media (min-width: 1024px) {
     html {
       --timer-dimension: 300px;
       --timer-font-size: 3.8rem;
