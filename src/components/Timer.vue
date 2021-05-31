@@ -115,8 +115,8 @@
 
 <style scoped>
     .clock-container {
-        width: 300px;
-        height: 300px;
+        width: var(--timer-dimension, 260px);
+        height: var(--timer-dimension, 260px);
         margin: 80px auto;
         border-radius: 50%;
         background: var(--dark-color);
@@ -124,7 +124,7 @@
         justify-content: center;
         align-items: center;
         color: var(--text-color);
-        font-size: 3.8rem;
+        font-size: var(--timer-font-size, 3.2rem);
         font-weight: 700;
         text-align: center;
         letter-spacing: 0.1rem;
@@ -152,8 +152,8 @@
     /* Sets the containers height and width */
     .base-timer {
         position: relative;
-        height: 300px;
-        width: 300px;
+        height: 100%;
+        width: 100%;
     }
 
     /* Removes SVG styling that would hide the time label */
@@ -172,8 +172,8 @@
         position: absolute;
 
         /* Size should match the parent container */
-        width: 300px;
-        height: 300px;
+        width: 100%;
+        height: 100%;
 
         /* Keep the label aligned to the top */
         top: 0;
@@ -186,9 +186,7 @@
     }
 
     .base-timer__label {
-        font-size: 3.8rem;
-        margin-bottom: 0.6rem;
-
+        font-size: var(--timer-font-size, 3.2rem);
     }
 
     .base-timer__action {

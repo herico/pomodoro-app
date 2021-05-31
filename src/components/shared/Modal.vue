@@ -1,5 +1,5 @@
 <template>
-  <div class="overlay">
+  <div :class="['overlay', !hideModal ? 'open': '']">
     <div :class="['modal', hideModal ? 'hide': '']">
       <div class="modal-header">
         <h3 class="modal-title">Settings</h3>
@@ -41,9 +41,13 @@
     height: 100%;
     top: 0;
     left: 0;
-    padding-top: 100px;
+    padding-top: 20px;
     background: transparent;
     pointer-events: none;
+  }
+
+  .overlay.open {
+    background: var(--modal-overlay-bg-color);
   }
 
   .modal {
@@ -60,6 +64,9 @@
   }
 
   @media (min-width: 1024px) {
+    .overlay {
+      padding-top: 0;
+    }
     .modal {
       min-height: 653px;
     }
