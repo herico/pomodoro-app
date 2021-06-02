@@ -24,7 +24,7 @@
 <script>
     import kitchenTimerMp3 from "../assets/audio/kichen-timer.mp3";
     export default {
-        emits: ['timer-paused', 'timer-finished'],
+        emits: ['timer-paused'],
         name: 'Timer',
         props: {
             limit: {
