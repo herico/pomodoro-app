@@ -22,8 +22,9 @@
 </template>
 
 <script>
+    import kitchenTimerMp3 from "../assets/audio/kichen-timer.mp3";
     export default {
-        emits: ['timer-paused'],
+        emits: ['timer-paused', 'timer-finished'],
         name: 'Timer',
         props: {
             limit: {
@@ -55,8 +56,12 @@
                     this.timeLeft = this.limit - this.timePassed;
                     this.timerText = this.TIMER_TEXTS.pause;
                     if (this.timeLeft === 0) {
+                        this.playAudio();
                         this.timerText = this.TIMER_TEXTS.finished;
+                        this.timeLeft = this.limit;
+                        this.timePassed = 0;
                         clearInterval(this.timerInterval);
+                        this.timerInterval = null;
                     }
                     this.setCircleDasharray();
                 }, 1000);
@@ -89,6 +94,10 @@
                 } else if (this.timerInterval && this.timePassed) {
                     this.pauseTimer();
                 }
+            },
+            playAudio() {
+                const audio = new Audio(kitchenTimerMp3);
+                audio.play();
             }
         },
         computed: {
