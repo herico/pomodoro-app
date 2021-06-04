@@ -22,6 +22,7 @@
 </template>
 
 <script>
+    import kitchenTimerMp3 from "../assets/audio/kichen-timer.mp3";
     export default {
         emits: ['timer-paused'],
         name: 'Timer',
@@ -49,13 +50,18 @@
         },
         methods: {
             startTimer() {
+                window.navigator.vibrate(200);
                 this.timerInterval = setInterval(() => {
                     this.timePassed = this.timePassed += 1;
                     this.timeLeft = this.limit - this.timePassed;
                     this.timerText = this.TIMER_TEXTS.pause;
                     if (this.timeLeft === 0) {
+                        this.playAudio();
                         this.timerText = this.TIMER_TEXTS.finished;
+                        this.timeLeft = this.limit;
+                        this.timePassed = 0;
                         clearInterval(this.timerInterval);
+                        this.timerInterval = null;
                     }
                     this.setCircleDasharray();
                 }, 1000);
@@ -76,6 +82,7 @@
                     .setAttribute("stroke-dasharray", circleDasharray);
             },
             pauseTimer() {
+                window.navigator.vibrate(200);
                 clearInterval(this.timerInterval);
                 this.timerInterval = null;
                 this.$emit('timer-paused', this.timeLeft);
@@ -87,6 +94,10 @@
                 } else if (this.timerInterval && this.timePassed) {
                     this.pauseTimer();
                 }
+            },
+            playAudio() {
+                const audio = new Audio(kitchenTimerMp3);
+                audio.play();
             }
         },
         computed: {
@@ -115,8 +126,8 @@
 
 <style scoped>
     .clock-container {
-        width: 300px;
-        height: 300px;
+        width: var(--timer-dimension, 260px);
+        height: var(--timer-dimension, 260px);
         margin: 80px auto;
         border-radius: 50%;
         background: var(--dark-color);
@@ -124,7 +135,7 @@
         justify-content: center;
         align-items: center;
         color: var(--text-color);
-        font-size: 3.8rem;
+        font-size: var(--timer-font-size, 3.2rem);
         font-weight: 700;
         text-align: center;
         letter-spacing: 0.1rem;
@@ -152,8 +163,8 @@
     /* Sets the containers height and width */
     .base-timer {
         position: relative;
-        height: 300px;
-        width: 300px;
+        height: 100%;
+        width: 100%;
     }
 
     /* Removes SVG styling that would hide the time label */
@@ -172,8 +183,8 @@
         position: absolute;
 
         /* Size should match the parent container */
-        width: 300px;
-        height: 300px;
+        width: 100%;
+        height: 100%;
 
         /* Keep the label aligned to the top */
         top: 0;
@@ -186,9 +197,7 @@
     }
 
     .base-timer__label {
-        font-size: 3.8rem;
-        margin-bottom: 0.6rem;
-
+        font-size: var(--timer-font-size, 3.2rem);
     }
 
     .base-timer__action {

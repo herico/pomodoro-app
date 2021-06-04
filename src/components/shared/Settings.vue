@@ -3,42 +3,56 @@
       <i class="material-icons">settings</i>
     </button>
     <modal :hide-modal="hideModal" @closeModal="closeModal">
+      <Form @submit="saveChanges" v-slot="{ meta }">
         <article class="settings-section time divider">
           <h4 class="settings-title">time (minutes)</h4>
           <div class="time-settings">
             <div class="time-setting" v-for="timeLimit in timeLimits" :key="timeLimit.name">
               <label :for="timeLimit.name">{{ timeLimit.title }}</label>
-              <input :ref="timeLimit.name" type="number" :id="timeLimit.name" :value="timeLimit.value">
+              <Field :name="timeLimit.name"
+                v-model="form.time[timeLimit.name]"
+                v-slot="{ field, errorMessage }"
+                :rules="timeRules" :id="timeLimit.name"  :value="timeLimit.value">
+                <input v-bind="field" type="number"/>
+                <span v-if="errorMessage" role="alert">{{ errorMessage }}</span>
+              </Field>
             </div>
           </div>
         </article>
-        <article class="settings-section divider">
+        <article class="settings-section font divider">
           <h4 class="settings-title">FONT</h4>
           <div class="font-settings">
-            <button v-for="font in fonts"
-              :key="font.name" 
-              :style="{fontFamily: font.name + ', sans-serif'}"
-              :class="['font-setting', font.isActive ? 'active': '']" 
-              @click="() => fontChange(font)">Aa</button>
+            <div v-for="font in fonts"
+                :key="font.name" 
+                :style="{fontFamily: font.name + ', sans-serif'}"
+                :class="['font-setting', font.isActive ? 'active': '']">
+              <Field type="radio" hidden name="font-type" :value="font.name" v-model="form.font" />  
+              <label @click="() => fontChange(font)">Aa</label>
+            </div>
           </div>
         </article>
-        <article class="modal-section">
+        <article class="settings-section color">
           <h4 class="settings-title">COLOR</h4>
           <div class="font-settings">
-            <button :class="['font-setting', color.isActive ? 'active': '']" 
-              v-for="color in colors" :key="color.name"
-              :style="{backgroundColor: color.hexCode}"
-              @click="() => colorChange(color)"
-              >
-              <i :data-color="JSON.stringify(color)" class="material-icons" v-show="color.isActive">check</i>
-            </button>
+            <div :class="['font-setting', color.isActive ? 'active': '']" v-for="color in colors" :key="color.name">
+                <input type="radio" hidden name="color-type" :value="color.hexCode" v-model="form.color">
+                <label 
+                  :style="{backgroundColor: color.hexCode}"
+                  @click="() => colorChange(color)"
+                >
+                  <i :data-color="JSON.stringify(color)" class="material-icons" v-show="color.isActive">check</i>
+                </label>
+            </div>
           </div>
         </article>
-        <button class="apply" @click="saveChanges">Apply</button>
+        <button :disabled="!meta.valid" class="apply" type="submit">Apply</button>
+      </Form>
     </modal>
 </template>
 <script>
-import Modal from "./Modal";
+import { Field, Form  } from 'vee-validate';
+import * as yup from 'yup';
+import Modal from "../shared/Modal";
 export default {
     emits: ['close-modal', 'open-modal', 'color-changed', 'font-changed', 'save-changes'],
     props: ['hideModal', 'colors', 'fonts', 'timeLimits'],
@@ -46,11 +60,32 @@ export default {
     data() {
       return {
         selectedColor: null,
-        selectedFont: null
+        selectedFont: null,
+        MAX_VALUES_TIMER: {
+          pomodoro: 50,
+          shortBreak: 10,
+          longBreak: 20
+        },
+        form: {
+          time: {
+            pomodoro: 0,
+            shortBreak: 0,
+            longBreak: 0
+          },
+          font: '',
+          color: ''
+        },
+        timeRules: yup
+          .number().positive().integer().typeError('Please provider a positive integer value')
+          .required().typeError('Please provider a positive integer value')
+          .min(1, 'You must provide at least one positive integer value')
+          .max(50, 'Is not recomended to do a task iteration longer than 50 minutes')
       }
     },
     components: {
-      Modal
+      Modal,
+      Field,
+      Form
     },
     methods: {
         openModal() {
@@ -68,21 +103,23 @@ export default {
         colorChange(color) {
           if (!this.isCurrentColor(color)) {
             this.selectedColor = color;
+            this.form.font = color.hex;
             this.$emit('color-changed', color);
           }
         },
         fontChange(font) {
           if (!this.isCurrentFont(font)) {
             this.selectedFont = font;
+            this.form.font = font.name;
             this.$emit('font-changed', font);
           }
         },
         formatTimeLimits() {
           const timeLimits = [];
-          for (const property in this.$refs) {
+          for (const property in this.form.time) {
             timeLimits.push({
               name: property,
-              value: this.$refs[property].value
+              value: this.form.time[property]
             });
           }
           return timeLimits;
@@ -94,6 +131,15 @@ export default {
             timeLimits: this.formatTimeLimits()
           });
         }
+    },
+    mounted() {
+      this.timeLimits.forEach(time => {
+        if(this.form.time[time.name] !== undefined) {
+          this.form.time[time.name] = time.value;
+        }
+      })
+      this.form.font = this.fonts.find(n => n.isActive).name;
+      this.form.color = this.colors.find(n => n.isActive).hexCode;
     }
 }
 </script>
@@ -106,7 +152,7 @@ export default {
     height: 60px;
     display: block;
     position: absolute;
-    bottom: 3rem;
+    top: calc(var(--timer-dimension) * 2 + 50px);
     left: 50%;
     transform: translate(-50%, -50%);
     cursor: pointer;
@@ -114,16 +160,6 @@ export default {
     justify-content: center;
     align-items: center;
     outline-color: var(--active-color);
-  }
-
-  @media (min-width: 601px) {
-    .settings {
-      left: unset;
-      right: 2rem;
-      top: 2rem;
-      bottom: unset;
-      transform: unset;
-    }
   }
 
   .settings:disabled {
@@ -135,6 +171,15 @@ export default {
   .settings:focus {
     border: 0.2rem solid var(--active-color);
     border-radius: 60px;
+  }
+
+  form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
   }
 
   .settings i {
@@ -168,16 +213,32 @@ export default {
     text-align: center;
   }
 
+  .time-settings {
+    width: 100%;
+  }
+
   .time-setting {
     display: flex;
     justify-content: space-between;
     margin-bottom: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .time-setting input.invalid {
+    border: 2px solid var(--error-color);
+  }
+
+  span[role="alert"] {
+    color: var(--error-color);
+    width: 100%;
   }
 
   .time-setting label {
+    cursor: pointer;
     font-size: 0.9rem;
     font-weight: 300;
     color: var(--text-dark-color);
+    max-width: 50%;
   }
 
   .time-setting input {
@@ -187,6 +248,7 @@ export default {
     background: var(--white-background);
     color: black;
     font-weight: 600;
+    max-width: 120px;
   }
 
   .font-settings {
@@ -202,28 +264,37 @@ export default {
   .font-setting {
     width: 50px;
     height: 50px;
+  }
+
+  .font-setting label {
+    width: 100%;
+    height: 100%;
     font-size: 1rem;
     border-radius: 50%;
+    display: inline-block;
+    line-height: 50px;
     background: var(--white-background);
     border: none;
     color: #a2a4b2;
     font-weight: 600;
     transition: all 0.3s ease-in-out;
     text-align: center;
+    cursor: pointer;
   }
-
-  .font-setting.active, .font-setting:focus, .font-setting:hover {
+  .font-setting input:checked + label,
+  .font-setting.active > label {
     background: var(--dark-color);
     color: white;
   }
 
-  .font-setting:focus {
+  .font-setting input:focus {
     outline: 2px dashed var(--text-color);
   }
 
   .font-setting i {
     color: var(--main-color);
-    font-weight: 300;
+    font-weight: 400;
+    line-height: 50px;
   }
 
   .font-setting:not(:last-child) {
@@ -235,13 +306,21 @@ export default {
     color: white;
     border: none;
     padding: 0.8rem 2rem;
+    max-width: 220px;
     border-radius: 23px;
     font-size: 1.2rem;
     position: absolute;
     bottom: -1.4rem;
     cursor: pointer;
     font-weight: 500;
-    transition: color 233ms ease-in-out;
+    transition: 
+      color 233ms ease-in-out,
+      background 265ms ease-in-out;
+  }
+
+  .apply:disabled {
+    background: var(--disabled-color);
+    pointer-events: none;
   }
 
   .apply:hover {

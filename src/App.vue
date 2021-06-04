@@ -168,13 +168,26 @@
 
   html {
     --main-color: #1e2140;
+    --main-title-color: white;
     --text-color: #a2a4b2;
     --text-dark-color: #49494b;
     --dark-color: #151932;
     --light-color: #242951;
     --active-color: #da7ffc;
     --white-background: #eef1fa;
+    --modal-overlay-bg-color: #1e2140cf;
+    --disabled-color: #64656e;
+    --error-color: rgb(246, 109, 109);
+    --timer-dimension: 240px;
+    --timer-font-size: 3.2rem;
     font-size: 16px;
+  }
+
+  @media (min-width: 1024px) {
+    html {
+      --timer-dimension: 300px;
+      --timer-font-size: 3.8rem;
+    }
   }
 
   body {
@@ -193,11 +206,12 @@
     background: var(--main-color);
     min-width: 100%;
     min-height: 100vh;
+    overflow-y: auto;
     position: relative;
   }
 
   .title {
-    color: var(--text-color);
+    color: var(--main-title-color);
     padding: 30px 0;
     text-align: center;
     font-size: 1.6rem;

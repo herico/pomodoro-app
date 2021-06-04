@@ -1,5 +1,5 @@
 <template>
-  <div class="overlay">
+  <div :class="['overlay', !hideModal ? 'open': '']">
     <div :class="['modal', hideModal ? 'hide': '']">
       <div class="modal-header">
         <h3 class="modal-title">Settings</h3>
@@ -41,14 +41,19 @@
     height: 100%;
     top: 0;
     left: 0;
+    padding-top: 20px;
     background: transparent;
     pointer-events: none;
+  }
+
+  .overlay.open {
+    background: var(--modal-overlay-bg-color);
   }
 
   .modal {
     max-width: 600px;
     width: 96%;
-    min-height: 360px;
+    min-height: 470px;
     background: white;
     border-radius: 13px;
     padding: 1.6rem;
@@ -59,8 +64,8 @@
   }
 
   @media (min-width: 1024px) {
-    .modal {
-      min-height: 400px;
+    .overlay {
+      padding-top: 0;
     }
   }
 
@@ -90,8 +95,8 @@
   }
 
   .modal-title {
-    font-size: 1.287rem;
-    font-weight: 500;
+    font-size: 1.887rem;
+    font-weight: 700;
     color: var(--text-dark-color);
   }
 
@@ -102,7 +107,7 @@
   }
 
   .modal-close i {
-    font-size: 1.987rem;
+    font-size: 1.487rem;
     font-weight: 400;
     color: var(--text-color);
     transition: color 0.6s ease-in-out;
