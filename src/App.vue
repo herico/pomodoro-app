@@ -37,7 +37,7 @@
     name: 'App',
     data() {
       return {
-        title: 'pomodoro',
+        title: 'Hack your productivity',
         hideModal: true,
         root: null,
         body: null,
