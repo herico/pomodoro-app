@@ -21,6 +21,6 @@ git commit -m 'deploy'
 
 # if you are deploying to https://<USERNAME>.github.io/<REPO>
 # 
-git push -f git@github.com:/herico/pomodoro-app.git main:gh-pages
+git push -f git@github.com:herico/pomodoro-app.git HEAD:gh-pages
 
 cd -

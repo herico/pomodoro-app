@@ -38,6 +38,7 @@
     data() {
       return {
         title: 'Hack your productivity',
+        description: 'Using the pomodoro technique you ensure your productivity to skyrocket',
         hideModal: true,
         root: null,
         body: null,
