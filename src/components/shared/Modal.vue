@@ -15,7 +15,7 @@
 </template>
 <script>
   export default {
-    emits: ['closeModal', 'openModal'],
+    emits: ['close-modal'],
     name: 'Modal',
     props: {
       hideModal: {

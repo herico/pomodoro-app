@@ -24,7 +24,6 @@
 <script>
     import kitchenTimerMp3 from "../assets/audio/kichen-timer.mp3";
     export default {
-        emits: ['timer-paused'],
         name: 'Timer',
         props: {
             limit: {
@@ -42,8 +41,7 @@
                 TIMER_TEXTS: {
                     start: 'Start',
                     pause: 'Pause',
-                    paused: 'Paused',
-                    finished: 'Finished'
+                    paused: 'Paused'
                 },
                 timerText: ''
             }
@@ -56,12 +54,7 @@
                     this.timeLeft = this.limit - this.timePassed;
                     this.timerText = this.TIMER_TEXTS.pause;
                     if (this.timeLeft === 0) {
-                        this.playAudio();
-                        this.timerText = this.TIMER_TEXTS.finished;
-                        this.timeLeft = this.limit;
-                        this.timePassed = 0;
-                        clearInterval(this.timerInterval);
-                        this.timerInterval = null;
+                        this.$store.dispatch('endTimer');
                     }
                     this.setCircleDasharray();
                 }, 1000);
@@ -85,14 +78,24 @@
                 window.navigator.vibrate(200);
                 clearInterval(this.timerInterval);
                 this.timerInterval = null;
-                this.$emit('timer-paused', this.timeLeft);
                 this.timerText = this.TIMER_TEXTS.paused;
+            },
+            stopTimer() {
+                this.resetTimer();
+            },
+            resetTimer() {
+                this.timeLeft = this.limit;
+                this.timePassed = 0;
+                clearInterval(this.timerInterval);
+                this.timerInterval = null;
+                this.timerText = this.TIMER_TEXTS.start;
+                this.setCircleDasharray();
             },
             handleTimer() {
                 if (!this.timerInterval) {
-                    this.startTimer();
+                   this.$store.dispatch('startTimer');
                 } else if (this.timerInterval && this.timePassed) {
-                    this.pauseTimer();
+                    this.$store.dispatch('pauseTimer');
                 }
             },
             playAudio() {
@@ -108,11 +111,40 @@
                     seconds = `0${seconds}`;
                 }
                 return `${minutes}:${seconds}`;
+            },
+            isTimerRunning() {
+                return this.$store.state.timerStatus.running;
+            },
+            isTimerPaused() {
+                return this.$store.state.timerStatus.paused;
+            },
+            hasTimerEnded() {
+                return this.$store.state.timerStatus.ended;
+            },
+            isTimerStopped() {
+                return this.$store.state.timerStatus.stopped;
             }
         },
         watch: {
             limit(newValue) {
                 this.timeLeft = newValue;
+            },
+            isTimerRunning(flag) {
+                if (flag) {
+                    this.startTimer();
+                }
+            },
+            isTimerPaused(flag) {
+                if (flag) this.pauseTimer();
+            },
+            hasTimerEnded(flag) {
+                if (flag) {
+                    this.playAudio();
+                    this.resetTimer();
+                }
+            },
+            isTimerStopped(flag) {
+                if (flag) this.stopTimer();
             }
         },
         mounted() {

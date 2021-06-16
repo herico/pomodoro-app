@@ -1,7 +1,11 @@
 <template>
   <div class="container">
     <h1 class="title">{{ title }}</h1>
-    <Nav :tabs="tabs" @change-tab="changeTab"/>
+    <Nav 
+      :tabs="tabs" 
+      :timer-is-active="timerIsActive"
+      :timer-is-stopped="timerIsStopped"
+      @change-tab="changeTab"/>
     <keep-alive>
       <component 
         :is="currentTabComponent"
@@ -14,12 +18,9 @@
       :fonts="fonts"
       :colors="colors"
       :timeLimits="timeLimits"
-      :hide-modal="hideModal"
       @save-changes="saveChanges"
       @font-changed="fontChanged"
-      @color-changed="colorChanged"
-      @open-modal="hideModal = false" 
-      @close-modal="hideModal = true"/>
+      @color-changed="colorChanged"/>
   </div>
 </template>
 
@@ -41,6 +42,7 @@
         hideModal: true,
         root: null,
         body: null,
+        currentActiveTab: 'pomodoro',
         tabs: [{
             isActive: true,
             text: 'pomodoro',

@@ -1,7 +1,19 @@
 <template>
-    <button class="settings" :disabled="!hideModal" @click="openModal">
-      <i class="material-icons">settings</i>
-    </button>
+    <div class="call-to-actions-container">
+      <button class="settings" v-if="$store.state.timerStatus.active" @click="$store.dispatch('stopTimer')">
+        <i class="material-icons">stop</i>
+      </button>
+      <button class="settings" v-if="$store.state.timerStatus.running" @click="$store.dispatch('pauseTimer')">
+        <i class="material-icons">pause_circle_outline</i>
+      </button>
+      <button class="settings" v-else-if="$store.state.timerStatus.paused" @click="$store.dispatch('startTimer')">
+        <i class="material-icons">play_circle_outline</i>
+      </button>
+      <button v-else class="settings" :disabled="!$store.state.hideModal || $store.state.timerStatus.active" @click="openModal">
+        <i class="material-icons">settings</i>
+      </button>
+    </div>
+    <br>
     <modal :hide-modal="hideModal" @closeModal="closeModal">
       <Form @submit="saveChanges" v-slot="{ meta }">
         <article class="settings-section time divider">
@@ -24,7 +36,7 @@
           <div class="font-settings">
             <div v-for="font in fonts"
                 :key="font.name" 
-                :style="{fontFamily: font.name + ', sans-serif'}"
+                :style="{ fontFamily: font.name + ', sans-serif' }"
                 :class="['font-setting', font.isActive ? 'active': '']">
               <Field type="radio" hidden name="font-type" :value="font.name" v-model="form.font" />  
               <label @click="() => fontChange(font)">Aa</label>
@@ -54,8 +66,8 @@ import { Field, Form  } from 'vee-validate';
 import * as yup from 'yup';
 import Modal from "../shared/Modal";
 export default {
-    emits: ['close-modal', 'open-modal', 'color-changed', 'font-changed', 'save-changes'],
-    props: ['hideModal', 'colors', 'fonts', 'timeLimits'],
+    emits: ['color-changed', 'font-changed', 'save-changes'],
+    props: ['colors', 'fonts', 'timeLimits'],
     name: 'Settings',
     data() {
       return {
@@ -89,10 +101,10 @@ export default {
     },
     methods: {
         openModal() {
-          this.$emit('open-modal');
+          this.$store.dispatch('openModal');
         },
         closeModal() {
-            this.$emit('close-modal');
+          this.$store.dispatch('closeModal');
         },
         isCurrentColor(color) {
           return this.colors.find(n => n.isActive && n.name === color.name);
@@ -130,7 +142,13 @@ export default {
             font: this.selectedFont,
             timeLimits: this.formatTimeLimits()
           });
+          this.$store.dispatch('closeModal')
         }
+    },
+    computed: {
+      hideModal() {
+        return this.$store.state.hideModal;
+      }
     },
     mounted() {
       this.timeLimits.forEach(time => {
@@ -144,21 +162,22 @@ export default {
 }
 </script>
 <style>
-.settings {
-    background: none;
-    border: none;
-    text-align: center;
-    width: 60px;
-    height: 60px;
+.call-to-actions-container {
     display: block;
     position: absolute;
     top: calc(var(--timer-dimension) * 2 + 50px);
     left: 50%;
     transform: translate(-50%, -50%);
-    cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+.settings {
+    background: none;
+    border: none;
+    text-align: center;
+    font-size: 20px;
+    cursor: pointer;
     outline-color: var(--active-color);
   }
 

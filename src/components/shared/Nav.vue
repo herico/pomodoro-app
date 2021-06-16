@@ -1,6 +1,6 @@
 <template>
     <ul class="tabs">
-      <li v-for="tab in tabs" @click="changeTab(tab)" :key="tab.text" :class="['tab', tab.isActive ? 'active': '']">
+      <li v-for="tab in tabs" @click="changeTab(tab)" :key="tab.text" :class="['tab', tab.isActive ? 'active': '', ($store.state.timerStatus.active) && !tab.isActive ? 'disabled': '']">
         <a class="tab-link" href="#">{{ tab.text }}</a>
       </li>
     </ul>
@@ -12,11 +12,21 @@ export default {
         tabs: {
             type: Array,
             required: true
+        },
+        timerIsActive: {
+          type: Boolean,
+          default: false
+        },
+        timerIsPaused: {
+          type: Boolean,
+          default: false
         }
     },
     methods: {
         changeTab(tab) {
+          if (!this.timerIsActive) {
             this.$emit('change-tab', tab);
+          }
         }
     }
 }
@@ -44,11 +54,17 @@ export default {
     height: 85%;
     width: 30%;
     margin: auto;
+    transition: all 235ms ease-in-out;
   }
 
   .tab.active {
     border-radius: 100px;
     background: var(--active-color);
+  }
+
+  .tab.disabled {
+    opacity: 0.5;
+    pointer-events: none;
   }
 
   .tab.active .tab-link {
