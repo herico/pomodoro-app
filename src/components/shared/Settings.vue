@@ -164,10 +164,7 @@ export default {
 <style>
 .call-to-actions-container {
     display: block;
-    position: absolute;
-    top: calc(var(--timer-dimension) * 2 + 50px);
-    left: 50%;
-    transform: translate(-50%, -50%);
+    margin: 20px auto;
     display: flex;
     justify-content: center;
     align-items: center;
