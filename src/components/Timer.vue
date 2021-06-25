@@ -160,7 +160,7 @@
     .clock-container {
         width: var(--timer-dimension, 260px);
         height: var(--timer-dimension, 260px);
-        margin: 80px auto;
+        margin: 80px auto 44px;
         border-radius: 50%;
         background: var(--dark-color);
         display: flex;

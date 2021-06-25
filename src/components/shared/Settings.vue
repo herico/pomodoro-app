@@ -174,6 +174,11 @@ export default {
     border: none;
     text-align: center;
     font-size: 20px;
+    padding: 0.3rem 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
     cursor: pointer;
     outline-color: var(--active-color);
   }

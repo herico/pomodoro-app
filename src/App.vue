@@ -187,8 +187,7 @@
 
   @media (min-width: 1024px) {
     html {
-      --timer-dimension: 300px;
-      --timer-font-size: 3.8rem;
+      --timer-font-size: 3.5rem;
     }
   }
 
