@@ -49,15 +49,17 @@
         methods: {
             startTimer() {
                 window.navigator.vibrate(200);
-                this.timerInterval = setInterval(() => {
-                    this.timePassed = this.timePassed += 1;
-                    this.timeLeft = this.limit - this.timePassed;
-                    this.timerText = this.TIMER_TEXTS.pause;
-                    if (this.timeLeft === 0) {
-                        this.$store.dispatch('endTimer');
-                    }
-                    this.setCircleDasharray();
-                }, 1000);
+                this.runTimer();
+                this.timerInterval = setInterval(this.runTimer, 1000);
+            },
+            runTimer() {
+                this.timePassed = this.timePassed += 1;
+                this.timeLeft = this.limit - this.timePassed;
+                this.timerText = this.TIMER_TEXTS.pause;
+                if (this.timeLeft === 0) {
+                    this.$store.dispatch('endTimer');
+                }
+                this.setCircleDasharray();
             },
             // Divides time left by the defined time limit.
             calculateTimeFraction() {

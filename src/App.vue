@@ -2,9 +2,7 @@
   <div class="container">
     <h1 class="title">{{ title }}</h1>
     <Nav 
-      :tabs="tabs" 
-      :timer-is-active="timerIsActive"
-      :timer-is-stopped="timerIsStopped"
+      :tabs="tabs"
       @change-tab="changeTab"/>
     <keep-alive>
       <component 

@@ -12,19 +12,11 @@ export default {
         tabs: {
             type: Array,
             required: true
-        },
-        timerIsActive: {
-          type: Boolean,
-          default: false
-        },
-        timerIsPaused: {
-          type: Boolean,
-          default: false
         }
     },
     methods: {
         changeTab(tab) {
-          if (!this.timerIsActive) {
+          if (!this.$store.state.timerStatus.active) {
             this.$emit('change-tab', tab);
           }
         }
