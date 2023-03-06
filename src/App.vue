@@ -4,14 +4,12 @@
     <Nav 
       :tabs="tabs"
       @change-tab="changeTab"/>
-    <keep-alive>
-      <component 
-        :is="currentTabComponent"
-        :pomodoro-limit="pomodoroLimit"
-        :long-break-limit="longBreakLimit"
-        :short-break-limit="shortBreakLimit"
-      ></component>
-    </keep-alive>
+    <component 
+      :is="currentTabComponent"
+      :pomodoro-limit="pomodoroLimit"
+      :long-break-limit="longBreakLimit"
+      :short-break-limit="shortBreakLimit"
+    ></component>
     <Settings
       :fonts="fonts"
       :colors="colors"
